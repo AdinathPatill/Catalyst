@@ -15,9 +15,6 @@ export default function MainScreen() {
   }, [dispatch]);
 
   const handleAddTodo = () => {
-    // Navigate to the AddTodoForm screen
-    // (Assuming the screen name is 'AddTodoScreen')
-    // You can replace it with your actual screen name if different
     navigation.navigate('AddTodoScreen');
   };
 
