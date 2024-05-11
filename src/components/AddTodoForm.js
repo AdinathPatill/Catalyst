@@ -25,7 +25,7 @@ export default function AddTodoForm() {
         onChangeText={setText}
       />
       <Button
-        title="Add"
+        title="Add todo"
         onPress={handleSubmit}
       />
     </View>

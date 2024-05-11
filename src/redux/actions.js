@@ -31,3 +31,10 @@ export const deleteTodo = (id) => {
     payload: id
   };
 };
+
+export const addTodo = (todo) => {
+  return {
+    type: ADD_TODO,
+    payload: todo
+  };
+};

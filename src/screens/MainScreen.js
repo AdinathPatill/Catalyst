@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchTodos } from '../redux/actions';
 import TodoItem from '../components/TodoItem';
@@ -8,7 +8,7 @@ export default function MainScreen() {
   const dispatch = useDispatch();
   const todos = useSelector(state => state.todos);
   const [filter, setFilter] = useState('All');
-  const [sort, setSort] = useState('Recent');
+  const [sort, setSort] = useState('MostRecent'); // Initialize sort state to MostRecent
 
   useEffect(() => {
     dispatch(fetchTodos());
@@ -26,21 +26,30 @@ export default function MainScreen() {
     setSort(newSort);
   };
 
+  const handleSortByMostRecent = () => {
+    setSort('MostRecent');
+  };
+
+  const handleSortById = () => {
+    setSort('ID');
+  };
+
   const filteredTodos = todos.filter(todo => {
     if (filter === 'All') return true;
     if (filter === 'Active') return !todo.completed;
     if (filter === 'Done') return todo.completed;
   });
 
-  const sortByRecent = (a, b) => {
+  const sortByMostRecent = (a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);
   };
 
-  const sortByID = (a, b) => {
+  const sortById = (a, b) => {
     return a.id - b.id;
   };
 
-  const sortedTodos = [...filteredTodos].sort(sort === 'Recent' ? sortByRecent : sortByID);
+  // Apply sorting based on the selected sort option
+  const sortedTodos = [...filteredTodos].sort(sort === 'MostRecent' ? sortByMostRecent : sortById);
 
   return (
     <View style={styles.container}>
@@ -48,7 +57,6 @@ export default function MainScreen() {
         <Text style={styles.info}>Total TODO items: {todos.length}</Text>
         <Text style={styles.info}>Completed TODO items: {todos.filter(todo => todo.completed).length}</Text>
       </View>
-      <Button title="Add TODO" onPress={handleAddTodo} color='green' />
       <FlatList
         data={sortedTodos}
         renderItem={({ item }) => (
@@ -63,8 +71,8 @@ export default function MainScreen() {
         <Button title="Done" onPress={() => handleFilterChange('Done')} />
       </View>
       <View style={styles.buttonsContainer}>
-        <Button title="Most Recent" onPress={() => handleSortChange('Recent')} />
-        <Button title="ID" onPress={() => handleSortChange('ID')} />
+        <Button title="Most Recent" onPress={handleSortByMostRecent} />
+        <Button title="ID" onPress={handleSortById} />
       </View>
     </View>
   );
@@ -80,7 +88,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+        marginBottom: 10,
+    marginTop:10,
   },
   info: {
     fontSize: 16,
