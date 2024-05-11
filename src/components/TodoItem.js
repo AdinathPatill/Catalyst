@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { toggleTodo, deleteTodo } from '../redux/actions';
 
-export default function TodoItem({ todo }) {
+const TodoItem = React.memo(({ todo }) => {
   const dispatch = useDispatch();
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     dispatch(toggleTodo(todo.id));
-  };
+  }, [dispatch, todo.id]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     dispatch(deleteTodo(todo.id));
-  };
+    // Show an alert
+   // Alert.alert('Success', 'Todo deleted successfully');
+  }, [dispatch, todo.id]);
 
   return (
     <View style={styles.container}>
@@ -32,7 +34,7 @@ export default function TodoItem({ todo }) {
       </View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -58,3 +60,5 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+
+export default TodoItem;

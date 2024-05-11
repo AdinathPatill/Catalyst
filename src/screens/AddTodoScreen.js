@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, TextInput, Button, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addTodo } from '../redux/actions';
 
-export default function AddTodoForm() {
+const AddTodoForm = React.memo(() => {
   const [text, setText] = useState('');
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
-    dispatch(addTodo({
-      title: text,
-      completed: false
-    }));
-    setText('');
-  };
+  const handleSubmit = useCallback(() => {
+    if (text.trim()) {
+      dispatch(addTodo({
+        title: text,
+        completed: false
+      }));
+      setText('');
+      // Show an alert
+      Alert.alert('Success', 'Todo added successfully');
+    } else {
+      // Show an alert for empty todo title
+      Alert.alert('Error', 'Please enter a valid todo title');
+    }
+  }, [dispatch, text]);
 
   return (
     <View>
@@ -23,9 +30,11 @@ export default function AddTodoForm() {
         onChangeText={setText}
       />
       <Button
-        title="Add"
+        title="Add todo"
         onPress={handleSubmit}
       />
     </View>
   );
-}
+});
+
+export default AddTodoForm;
